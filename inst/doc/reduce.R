@@ -8,6 +8,7 @@ knitr::opts_chunk$set(
 library(sdStaf)
 data(phytotoma)
 
+
 ## ------------------------------------------------------------------------
 library(dismo)
 predictor <- stack(list.files(path=paste(system.file(package="dismo"),'/ex', sep=''), pattern='grd', full.names=TRUE ))
@@ -19,7 +20,9 @@ plot(predictor$bio1)
 
 
 ## ------------------------------------------------------------------------
-reduce_cut <- reduce.env(env = predictor, occ_data = phytotoma[,2:3], h.M = FALSE, radio = 250)
+buf.M <- stim.M(phytotoma[,2:3], radio = 131)
+
+reduce_cut <- reduce.env(env = predictor, occ_data = phytotoma[,2:3], mask= buf.M)
 
 plot(reduce_cut@cropa$bio1)
 

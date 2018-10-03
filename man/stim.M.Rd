@@ -4,12 +4,14 @@
 \alias{stim.M}
 \title{Build buffer zone to M}
 \usage{
-stim.M(occs, radio, ...)
+stim.M(occs, radio, bgeo = NULL, ...)
 }
 \arguments{
 \item{occs}{data.frame of ocurrence data (longitude/latitude).}
 
 \item{radio}{radio of buffer.}
+
+\item{bgeo}{Biogeographical layer. Categorical values.}
 
 \item{...}{Optional features of buffer}
 }

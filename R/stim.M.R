@@ -2,7 +2,7 @@
 #'
 #' Returns buffer zone based on ocurrence data
 
-stim.M <- function (occs, radio, ...)
+stim.M <- function (occs, radio, bgeo=NULL, ...)
 
 #'
 #' To define calibration area is crucial step (Barve et al., 2011),
@@ -15,6 +15,7 @@ stim.M <- function (occs, radio, ...)
 #'
 #' @param occs data.frame of ocurrence data (longitude/latitude).
 #' @param radio radio of buffer.
+#' @param bgeo Biogeographical layer. Categorical values.
 #' @param ... Optional features of buffer
 #'
 #' @return SpatialPolygons* object
@@ -50,8 +51,46 @@ stim.M <- function (occs, radio, ...)
 #' @export
 #'
 {
-  rat <- 1000 * radio
-  sp_po <- SpatialPoints(occs)
-  projection(sp_po) <- CRS('+proj=longlat +datum=WGS84')
-  spbuf <- buffer(sp_po, width = rat)
+  if(is.null(bgeo)){
+    rat <- 1000 * radio
+    sp_po <- SpatialPoints(occs)
+    projection(sp_po) <- CRS('+proj=longlat +datum=WGS84')
+    spbuf <- buffer(sp_po, width = rat)
+    plot(spbuf)
+    return(spbuf)
+
+
+  }else{
+
+    b_ex <- raster::extract(bgeo, occs)
+    b_ex <- unique(b_ex$Province_1)
+    b_ex <- as.vector(b_ex)
+
+    shapeOut <- subset(bgeo, bgeo@data[,4] %in% b_ex)
+
+    #plot(shapeOut)
+    #points(occ[,2:3], pch=16,cex=0.5)
+    rat <- 1000 * radio
+    sp_po <- SpatialPoints(occs)
+    projection(sp_po) <- CRS('+proj=longlat +datum=WGS84')
+    spbuf <- buffer(sp_po, width = rat)
+
+    #plot(bu_z)
+    #points(occ[,2:3], pch=16,cex=0.5)
+
+    spbuf <- crop(shapeOut, spbuf)
+    plot(spbuf)
+    #plot(M.zo)
+    #paste0('Mask based on Biogeography. Morrone (2014)')
+    #paste0(b_ex)
+    return(spbuf)
+  }
+
+
+
+
+
+
+
+
 }

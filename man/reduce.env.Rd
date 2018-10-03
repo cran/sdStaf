@@ -4,7 +4,7 @@
 \alias{reduce.env}
 \title{Reduce environmental data}
 \usage{
-reduce.env(env, transfer = NULL, occ_data, h.M = FALSE, mask, radio)
+reduce.env(env, transfer = NULL, occ_data, mask)
 }
 \arguments{
 \item{env}{RasterStack* objet.}
@@ -14,13 +14,7 @@ reduce.env(env, transfer = NULL, occ_data, h.M = FALSE, mask, radio)
 \item{occ_data}{A data.frame of occurrence records.
 It must include two column based on latitude and longitude.}
 
-\item{h.M}{logical. If \code{TRUE}, called first
-croping mask, (\code{default = FALSE}). This may be efficent
- in case where you have a "M" area.}
-
 \item{mask}{Croped mask, must be shapefile (.shp), readOGR.}
-
-\item{radio}{Radio value of buffer zone. Numeric > 0, Unit is kilometers.}
 }
 \value{
 \code{@crop} RasterStack* Objet
@@ -42,12 +36,15 @@ the values of each point of occurrence of them.
 # Phytotoma ocurrence data
 data(phytotoma)
 
+
 # Complement
 library(dismo)
 predictor <- stack(list.files(path=paste(system.file(package="dismo"),'/ex', sep=''),
  pattern='grd', full.names=TRUE ))
-reduce_cut <- reduce.env(env = predictor, occ_data = phytotoma[,2:3],
-h.M = FALSE, radio = 250)
+
+ maskM <- stim.M(phytotoma[,2:3], 131)
+
+reduce_cut <- reduce.env(env = predictor, occ_data = phytotoma[,2:3], mask=maskM)
 
 # Plot reduce_cut
 plot(reduce_cut@cropa$bio1)

@@ -14,11 +14,7 @@
 #' @param transfer List of rasterstack object
 #' @param occ_data A data.frame of occurrence records.
 #'  It must include two column based on latitude and longitude.
-#' @param h.M logical. If \code{TRUE}, called first
-#' croping mask, (\code{default = FALSE}). This may be efficent
-#'  in case where you have a "M" area.
 #' @param mask Croped mask, must be shapefile (.shp), readOGR.
-#' @param radio Radio value of buffer zone. Numeric > 0, Unit is kilometers.
 #'
 #' @return
 #'
@@ -33,12 +29,15 @@
 #' # Phytotoma ocurrence data
 #' data(phytotoma)
 #'
+#'
 #' # Complement
 #' library(dismo)
 #' predictor <- stack(list.files(path=paste(system.file(package="dismo"),'/ex', sep=''),
 #'  pattern='grd', full.names=TRUE ))
-#' reduce_cut <- reduce.env(env = predictor, occ_data = phytotoma[,2:3],
-#' h.M = FALSE, radio = 250)
+#'
+#'  maskM <- stim.M(phytotoma[,2:3], 131)
+#'
+#' reduce_cut <- reduce.env(env = predictor, occ_data = phytotoma[,2:3], mask=maskM)
 #'
 #' # Plot reduce_cut
 #' plot(reduce_cut@cropa$bio1)
@@ -63,31 +62,15 @@
 #' @export
 #'
 #'
-reduce.env <- function(env, transfer=NULL, occ_data, h.M=FALSE, mask, radio)
+reduce.env <- function(env, transfer=NULL, occ_data, mask)
 {
+  ptm <- proc.time()
   if(is.null(env)){
     stop('You need to define environmental data')
   }
   if (is.null(occ_data)){
     stop('You need to define ocurrence data (Longitude/Latitude)')
   }
-
-  ptm <- proc.time()
-
-  # si se posee una mascara de recorte o M construido bajo otro metodo,
-  if(h.M == FALSE){
-    # Genera una hipotesis de M en base a una zona buffer de ratio = x
-    mask <- stim.M(occ_data, radio)
-  }
-  else{ mask <- mask }
-
-  # for(i in 1: nlayers(biovars.mask) ){
-  #  writeRaster(biovars.mask_M[[i]],
-  #             paste0("./asc_M/",names(biovars.mask_M[[i]]),".asc"))
-  #  }
-  #biovars.mask <- stack(biovars.mask)
-  #occ_dat <- as.matrix(occ_data)
-
 
   if(is.null(transfer)){
     # Corta las variables ambientales originales (todo el mundo) hacia el area de interes.
@@ -109,11 +92,7 @@ reduce.env <- function(env, transfer=NULL, occ_data, h.M=FALSE, mask, radio)
     datavalue <- extract(biovars.mask, occ_data)
     datavalue <- na.omit(datavalue)
 
-
   }
-
-
-
 
   r <- EnvimRed(cropa = biovars.mask,
                  project = layer.transfer,

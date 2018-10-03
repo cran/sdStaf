@@ -1,7 +1,8 @@
 Package: sdStaf
 Type: Package
 Title: Species Distribution and Stability Future Models
-Version: 0.1.14
+Version: 1.0.0
+Date: 2018-10-03
 Authors@R: c(person("P. Joser", "Atauchi", role = c("aut", "cre"),
                      email = "patauchi@gmail.com"))
 Maintainer: P. Joser Atauchi <patauchi@gmail.com>
@@ -15,7 +16,7 @@ Imports: sp, rgdal, rgeos, rasterVis, tidyr, raster, dismo
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-08-08 17:32:07 UTC; p.joseratauchi
+Packaged: 2018-10-03 21:45:54 UTC; p.joseratauchi
 Author: P. Joser Atauchi [aut, cre]
 Repository: CRAN
-Date/Publication: 2018-08-11 16:30:03 UTC
+Date/Publication: 2018-10-03 22:00:03 UTC
