@@ -1,66 +1,62 @@
 #' Stability of ecological niche models
 
-stability <- function(current = NULL, future = NULL, thr.value = NULL,
-                      charname = NULL)
+stability <- function(current=NULL, project=NULL, thr.value,
+                      continue = FALSE)
 #'
 #' Returns stability niche based on species distribution models and their projections.
 #'
 #'
 #' @param current Raster* objet of present distribution.
 #' Raster has continue values.
-#' @param future RasterStack* object of future distributions.
+#' @param project RasterStack* object of project distributions.
 #' Must have three models with continue values.
 #' @param thr.value Cut value (0 — 1) of threshold in order to
 #'  species distribution.
 #'
-#' @param charname \code{character-Class}, name of the species.
-#' (\code{default = NULL}).
+#' @param continue defines if the species distribution are either binary or continue maps.
+#' \code{ Default = FALSE}.
 #'
 #' @return An object of class 'StabEcodist'
 #'
-#' \bold{Method S4 print}
+#' \bold{Based on binary maps}
 #'
 #' Return table with these features: \code{Models} and \code{nPixel}
 #' (frequency of pixel with that feature).
 #'
-#' \enumerate{
+#' Stability maps based on  binary species distirbution, give:
 #'
-#' \item{\bold{Lost area}
+#'  \code{Values of 0 } Shows absence
 #'
-#' {code \code{Models}:
 #'
-#'  \code{code 0} mention the area with species absence.
+#'  \code{Values of 100 } Mentions the lost area
 #'
-#'  \code{code 14} mention the lost area current in the future projections}
-#' }
 #'
-#' \item{\bold{Gain area}
+#'  \code{Values [1:100]} Shows colonizable area. Different models are defined as numbers (e.g.
+#' Value of \code{1} indicates one models predict gain; Value of \code{2} indicates
+#'  two models predict agains)
 #'
-#' {code \code{Models}:
 #'
-#'  \code{code 1} mention the gain area acording with one model.
+#'   \code{Values  > 100 } Shows stability or permanence. Differente models are defined as numbers (e.g.
+#' value of \code{101} mentions one model predict stability, value of \code{102} mentions
+#' two models predict stability)
 #'
-#'  \code{code 2} acording with two models.
 #'
-#'  \code{code 3} acording with three models. }
-#' }
 #'
-#' \item{\bold{Stable}
+#' \bold{Based on continue maps}
 #'
-#' {code \code{Models}:
+#' Species distribution show different values of stability along
+#' of their distributions.
 #'
-#'  \code{code 15} mention the stable area with one model.
+#'\code{Values of -2 } Shows absence
 #'
-#'  \code{code 16} mention the stable area with two models
 #'
-#'  \code{code 17} mention the stable area with three models.}
-#' }
+#'  \code{Values [-1 : 0] } Shows colonized grade or gain.
 #'
-#' }
 #'
-#' \bold{Method S4 plot}
+#'  \code{Values [0 : 1] } Shows stability or permanence
 #'
-#' Return maps of stability niche
+#'
+#'    \code{Values of 2 } Shows lost area
 #'
 #'
 #' @references
@@ -71,35 +67,41 @@ stability <- function(current = NULL, future = NULL, thr.value = NULL,
 #' @export
 
 
-
 {
-  if(is.null(list(current, future, thr.value)) == TRUE){
-    stop('specifc arguments')
+
+  if(is.null(current) == TRUE){
+    stop('You need to define current distribution')
   }
-  if(is.null(charname) == TRUE && is.character(charname) == TRUE){
-    'sp'
-  }
-  if(nlayers (current) != 1 & nlayers (future) != 3){
-    message('Review the layer numbers')
+  if(is.null(list(project)) == TRUE){
+    stop('You need to define projection distribution')
   }
 
-  if ((thr.value >= 0 & thr.value <= 1) == FALSE) {
-    message('You need to put a value of thr.value')
-  }else{
+  if(continue == FALSE){
+
+    if ((thr.value >= 0 & thr.value <= 1) == FALSE) {
+      message('Threshold is value between [0 - 1]')
+    }
     # Build stability analysis
-    dfa <- stabl(current, future, thr.value)
+    dfa <- stabl(current, project, thr.value)
+
     # data.frame of stability
-    stab.an <- rasterToPoints(dfa)
+    stab.an <- raster::rasterToPoints(dfa)
     stab.an <- as.data.frame(stab.an)
 
     # show statistics
     stab.an <- as.data.frame(table(stab.an$layer))
     names(stab.an) <- c("Models", "nPixel")
     stin <- stab.an
+
+    output <- new("StabEcodist", df = stin, map = dfa)
+    return(output)
+
+  }else{
+
+    dfa <- stabl.con(current, project, thr.value)
+
+    output <- new("StabEcodist", map = dfa)
+    return(output)
   }
 
-  output <- new("StabEcodist", df = stin, map = dfa)
-  return(output)
-
 }
-

@@ -12,7 +12,7 @@
 
 <meta name="author" content="P. Joser Atachi &amp; A. Townsend Peterson" />
 
-<meta name="date" content="2018-10-03" />
+<meta name="date" content="2018-10-29" />
 
 <title>Stability Models</title>
 
@@ -280,7 +280,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Stability Models</h1>
 <h4 class="author"><em>P. Joser Atachi &amp; A. Townsend Peterson</em></h4>
-<h4 class="date"><em>2018-10-03</em></h4>
+<h4 class="date"><em>2018-10-29</em></h4>
 
 
 
@@ -314,7 +314,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb1-12" data-line-number="12"></a>
 <a class="sourceLine" id="cb1-13" data-line-number="13">future &lt;-<span class="st"> </span>raster<span class="op">::</span><span class="kw">stack</span>(future_list)</a></code></pre></div>
 <p>We calculate stability values of Peruvian plantcutter</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">stabSpecies &lt;-<span class="st"> </span><span class="kw">stability</span>(<span class="dt">current =</span> current, <span class="dt">future =</span> future, <span class="dt">thr.value=</span><span class="fl">0.34</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">stabSpecies &lt;-<span class="st"> </span><span class="kw">stability</span>(<span class="dt">current =</span> current, <span class="dt">project =</span> future, <span class="dt">thr.value=</span><span class="fl">0.34</span>)</a></code></pre></div>
 <p>Details of Stability Models. Realize that upper values to 100 show stability and lower values show areas with colonize potential.</p>
 <p>Besides, It has built a stability maps that can be plotter with <code>plot(stabSpecies)</code></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">print</span>(stabSpecies)</a>

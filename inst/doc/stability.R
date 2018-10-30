@@ -21,7 +21,7 @@ future <- raster::stack(future_list)
 
 
 ## ------------------------------------------------------------------------
-stabSpecies <- stability(current = current, future = future, thr.value=0.34)
+stabSpecies <- stability(current = current, project = future, thr.value=0.34)
 
 ## ------------------------------------------------------------------------
 print(stabSpecies)

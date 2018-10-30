@@ -4,68 +4,64 @@
 \alias{stability}
 \title{Stability of ecological niche models}
 \usage{
-stability(current = NULL, future = NULL, thr.value = NULL,
-  charname = NULL)
+stability(current = NULL, project = NULL, thr.value,
+  continue = FALSE)
 }
 \arguments{
 \item{current}{Raster* objet of present distribution.
 Raster has continue values.}
 
-\item{future}{RasterStack* object of future distributions.
+\item{project}{RasterStack* object of project distributions.
 Must have three models with continue values.}
 
 \item{thr.value}{Cut value (0 — 1) of threshold in order to
 species distribution.}
 
-\item{charname}{\code{character-Class}, name of the species.
-(\code{default = NULL}).}
+\item{continue}{defines if the species distribution are either binary or continue maps.
+\code{ Default = FALSE}.}
 }
 \value{
 An object of class 'StabEcodist'
 
-\bold{Method S4 print}
+\bold{Based on binary maps}
 
 Return table with these features: \code{Models} and \code{nPixel}
 (frequency of pixel with that feature).
 
-\enumerate{
+Stability maps based on  binary species distirbution, give:
 
-\item{\bold{Lost area}
+ \code{Values of 0 } Shows absence
 
-{code \code{Models}:
 
- \code{code 0} mention the area with species absence.
+ \code{Values of 100 } Mentions the lost area
 
- \code{code 14} mention the lost area current in the future projections}
-}
 
-\item{\bold{Gain area}
+ \code{Values [1:100]} Shows colonizable area. Different models are defined as numbers (e.g.
+Value of \code{1} indicates one models predict gain; Value of \code{2} indicates
+ two models predict agains)
 
-{code \code{Models}:
 
- \code{code 1} mention the gain area acording with one model.
+  \code{Values  > 100 } Shows stability or permanence. Differente models are defined as numbers (e.g.
+value of \code{101} mentions one model predict stability, value of \code{102} mentions
+two models predict stability)
 
- \code{code 2} acording with two models.
 
- \code{code 3} acording with three models. }
-}
 
-\item{\bold{Stable}
+\bold{Based on continue maps}
 
-{code \code{Models}:
+Species distribution show different values of stability along
+of their distributions.
 
- \code{code 15} mention the stable area with one model.
+\code{Values of -2 } Shows absence
 
- \code{code 16} mention the stable area with two models
 
- \code{code 17} mention the stable area with three models.}
-}
+ \code{Values [-1 : 0] } Shows colonized grade or gain.
 
-}
 
-\bold{Method S4 plot}
+ \code{Values [0 : 1] } Shows stability or permanence
 
-Return maps of stability niche
+
+   \code{Values of 2 } Shows lost area
 }
 \description{
 Returns stability niche based on species distribution models and their projections.

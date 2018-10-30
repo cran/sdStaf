@@ -41,20 +41,65 @@ stabl <- function(p, q, thr.value)
   p <- reclassify(p, mr)
   pmf <- reclassify(p, rcls)
 
-  # renames
-  names(q) <- c("q1","q2","q3")
-
-  q1 <- reclassify(q[[1]], mr)
-  q2 <- reclassify(q[[2]], mr)
-  q3 <- reclassify(q[[3]], mr)
+  qs <- reclassify(q, mr, right=FALSE)
+  qs <- calc(qs, fun=sum)
 
   # Build stability
-  stab <- pmf + (q1 + q2 + q3)
+  stab <- pmf + qs
   #mapp <- rasterToPoints(stab)
 
   #df <- data.frame(mapp)
   #colnames(df) <- c("Longitude", "Latitude", "MODEL")
   return(stab)
 }
+
+
+stabl.con <- function(p, q, thr.value){
+  # build threshould
+  t <- as.numeric(thr.value)
+  ts <- c(0, t, -1)
+  mr <- matrix(ts, ncol = 3, byrow = TRUE)
+  c_pre <- reclassify(p, mr,right=FALSE)
+
+  t1 <- c(0, t, 0)
+  mr1 <- matrix(t1, ncol = 3, byrow = TRUE)
+  qs <- reclassify(q, mr1,right=FALSE)
+
+  fun <- function(x){
+      # paramaters
+        nparm <- length(x[x > 0])
+      # core function
+        mean(x) * nparm / nlayers(q) }
+
+  q.val <- calc(qs, fun = fun)
+    v <- getValues(q.val)
+    v <- replace(v, v == 0, 10)
+
+    qs.complex <- setValues(q.val, v)
+
+  plot(qs.complex)
+
+
+  # Build stability
+  stab <- c_pre * qs.complex
+
+  t3 <- c(-10, -1, -2, 1 , 10, 2)
+  mr3 <- matrix(t3, ncol = 3, byrow = TRUE)
+  stab.sal <- reclassify(stab, mr3, right=FALSE)
+
+
+  #plot(stab.sal)
+  #con.rast <- stack(q.val, c_pre)
+  #mX.lost <- function(x, y, q = 2, p = -1) {ifelse(x < 0.1, p * q, x * y)}
+  #stab <- overlay(x=q.val,y=c_pre, fun = mX.lost, unstack=TRUE,forcefun=T)
+
+#writeRaster(stab.sal, 'Prueb.asc',overwrite=T)
+
+  #plot(stab)
+  #df <- data.frame(mapp)
+  #colnames(df) <- c("Longitude", "Latitude", "MODEL")
+  return(stab.sal)
+}
+
 
 
